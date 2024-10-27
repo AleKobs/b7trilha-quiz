@@ -9,26 +9,31 @@ import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { Loader2 } from 'lucide-react'
 
-type Path = 'frontend' | 'backend' | 'fullstack' | 'mobile'
 
-interface Scores {
+type LearningPath = 'frontend' | 'backend' | 'fullstack' | 'mobile'
+
+
+// Interfaces
+interface PathScores {
   frontend: number
   backend: number
   mobile: number
   fullstack: number
 }
 
-interface Option {
+interface QuizOption {
   text: string
-  scores: Partial<Scores>
+  scores: Partial<PathScores>
 }
 
-interface Question {
+
+interface QuizQuestion {
   question: string
-  options: Option[]
+  options: QuizOption[]
 }
 
-const questions: Question[] = [
+// perguntas e "pesos"
+const quizQuestions: QuizQuestion[] = [
   {
     question: "Quando você está resolvendo um problema, o que mais te motiva?",
     options: [
@@ -70,7 +75,8 @@ const questions: Question[] = [
   }
 ]
 
-const pathCourses: { [key in Path]: string[] } = {
+// lista de cursos na ordem e por caminho TODO:AJUSTAR
+const recommendedCourses: { [key in LearningPath]: string[] } = {
   frontend: [
     "HTML5 e CSS3",
     "Javascript",
@@ -106,40 +112,50 @@ const pathCourses: { [key in Path]: string[] } = {
 }
 
 export function Quiz() {
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0)
-  const [scores, setScores] = useState<Scores>({ frontend: 0, backend: 0, mobile: 0, fullstack: 0 })
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
   const [selectedOption, setSelectedOption] = useState<string>('')
   const [quizCompleted, setQuizCompleted] = useState<boolean>(false)
-  const [recommendedPath, setRecommendedPath] = useState<Path | ''>('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [progress, setProgress] = useState<number>(0)
 
-  useEffect(() => {
-    setProgress((currentQuestion / questions.length) * 100)
-  }, [currentQuestion])
+  // Esquema de pontuação por pergunta
+  const [pathScores, setPathScores] = useState<PathScores>({ frontend: 0, backend: 0, mobile: 0, fullstack: 0 })
+  const [recommendedPath, setRecommendedPath] = useState<LearningPath | ''>('')
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+
+
+
+  useEffect(() => {
+    setProgress((currentQuestionIndex / quizQuestions.length) * 100)
+  }, [currentQuestionIndex])
+
+  // Função chamada quando o usuário responde a uma pergunta
   const handleAnswer = () => {
     if (selectedOption) {
-      const option = questions[currentQuestion].options.find(opt => opt.text === selectedOption)
+      // Busca a opção selecionada e atualiza as pontuações dos caminhos
+      const option = quizQuestions[currentQuestionIndex].options.find(opt => opt.text === selectedOption)
       if (option) {
-        setScores(prevScores => {
-          const newScores: Scores = { ...prevScores }
+        setPathScores(prevScores => {
+          const updatedScores: PathScores = { ...prevScores }
           Object.entries(option.scores).forEach(([key, value]) => {
-            const typedKey = key as keyof Scores
-            if (typedKey in newScores && typeof value === 'number') {
-              newScores[typedKey] += value
+            const typedKey = key as keyof PathScores
+            if (typedKey in updatedScores && typeof value === 'number') {
+              updatedScores[typedKey] += value
             }
           })
-          return newScores
+          return updatedScores
         })
       }
 
-      setIsLoading(true)
 
+      setIsLoading(true)
       setTimeout(() => {
         setIsLoading(false)
-        if (currentQuestion < questions.length - 1) {
-          setCurrentQuestion(currentQuestion + 1)
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+          // proxima pergunta
+          setCurrentQuestionIndex(currentQuestionIndex + 1)
           setSelectedOption('')
         } else {
           finishQuiz()
@@ -148,10 +164,13 @@ export function Quiz() {
     }
   }
 
-  const finishQuiz = () => {
-    const maxScore = Math.max(...Object.values(scores))
-    const recommendedPaths = (Object.keys(scores) as Path[]).filter(key => scores[key] === maxScore)
 
+  const finishQuiz = () => {
+    // Calcula o caminho com a maior pontuação e faz a recomendação final
+    const maxScore = Math.max(...Object.values(pathScores))
+    const recommendedPaths = (Object.keys(pathScores) as LearningPath[]).filter(key => pathScores[key] === maxScore)
+
+    // Se empatar, recomenda 'fullstack', senão recomenda o caminho com maior pontuação
     if (recommendedPaths.length === 1) {
       setRecommendedPath(recommendedPaths[0])
     } else {
@@ -160,7 +179,7 @@ export function Quiz() {
 
     setQuizCompleted(true)
     confetti({
-      particleCount: 100,
+      particleCount: 120,
       spread: 70,
       origin: { y: 0.6 }
     })
@@ -172,39 +191,42 @@ export function Quiz() {
         <div className="absolute inset-0 bg-blue-500 opacity-10 blur-3xl"></div>
         <div className="relative bg-gray-800 rounded-lg p-8 shadow-2xl">
           <h2 className="text-3xl font-bold text-center text-blue-400 mb-8">
-            {quizCompleted ? "Sua Jornada de Aprendizado" : `Pergunta ${currentQuestion + 1} de ${questions.length}`}
+
+            {quizCompleted ? "Sua Jornada de Aprendizado" : `Pergunta ${currentQuestionIndex + 1} de ${quizQuestions.length}`}
+
           </h2>
           <AnimatePresence mode="wait">
             {!quizCompleted && !isLoading && (
               <motion.div
-                key={currentQuestion}
+                key={currentQuestionIndex}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
                 transition={{ duration: 0.3 }}
               >
                 <Progress value={progress} className="w-full mb-6" />
-                <p className="text-xl mb-6">{questions[currentQuestion].question}</p>
+                <p className="text-xl mb-6">{quizQuestions[currentQuestionIndex].question}</p>
                 <RadioGroup value={selectedOption} onValueChange={setSelectedOption} className="space-y-4">
-                  {questions[currentQuestion].options.map((option, index) => (
+                  {quizQuestions[currentQuestionIndex].options.map((option, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -50 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
+                      className={`overflow-hidden rounded-lg ${selectedOption === option.text ? 'bg-blue-500 border-blue-500' : 'border-gray-700'}`}
                     >
                       <Label
                         htmlFor={`option-${index}`}
                         className="flex items-center p-4 rounded-lg border-2 border-gray-700 hover:border-blue-500 transition-all cursor-pointer"
                       >
-                        <RadioGroupItem value={option.text} id={`option-${index}`} className="mr-3" />
+                        <RadioGroupItem value={option.text} id={`option-${index}`} className="mr-3 bg-white" />
                         {option.text}
                       </Label>
                     </motion.div>
                   ))}
                 </RadioGroup>
                 <Button onClick={handleAnswer} className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-6">
-                  {currentQuestion < questions.length - 1 ? "Próxima Pergunta" : "Finalizar Quiz"}
+                  {currentQuestionIndex < quizQuestions.length - 1 ? "Próxima Pergunta" : "Finalizar Quiz"}
                 </Button>
               </motion.div>
             )}
@@ -226,12 +248,15 @@ export function Quiz() {
                 transition={{ duration: 0.5 }}
                 className="space-y-8"
               >
+
+
                 <h3 className="text-2xl font-bold text-center text-blue-400 mb-8">
-                  Trilha Recomendada: {recommendedPath.charAt(0).toUpperCase() + recommendedPath.slice(1)}
+                  Trilha Recomendada: <br />{recommendedPath.charAt(0).toUpperCase() + recommendedPath.slice(1)}
                 </h3>
+
                 <div className="relative">
                   <div className="absolute left-4 top-0 bottom-0 w-1 bg-blue-500 opacity-30"></div>
-                  {pathCourses[recommendedPath].map((course: string, index: number) => (
+                  {recommendedCourses[recommendedPath].map((course: string, index: number) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -50 }}
@@ -265,7 +290,7 @@ export function Quiz() {
 
           </AnimatePresence>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
