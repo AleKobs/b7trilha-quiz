@@ -30,41 +30,42 @@ interface Question {
 
 const questions: Question[] = [
   {
-    question: "Qual aspecto da programação mais te interessa?",
+    question: "Quando você está resolvendo um problema, o que mais te motiva?",
     options: [
-      { text: "Criar interfaces visuais e interativas", scores: { frontend: 2, fullstack: 1, mobile: 1 } },
-      { text: "Trabalhar com lógica e processamento de dados", scores: { backend: 2, fullstack: 1 } },
-      { text: "Desenvolver aplicativos para smartphones", scores: { mobile: 2, fullstack: 1 } }
+      { text: "Encontrar uma solução prática e rápida", scores: { frontend: 2, mobile: 1, fullstack: 1 } },
+      { text: "Entender a fundo como o problema surgiu e resolvê-lo de forma eficiente", scores: { backend: 2, fullstack: 1, mobile: 1 } }
     ]
   },
   {
-    question: "Como você prefere ver o resultado do seu trabalho?",
+    question: "Qual dessas atividades parece mais interessante para você?",
     options: [
-      { text: "Visualmente, em uma tela ou dispositivo", scores: { frontend: 2, mobile: 2, fullstack: 1 } },
-      { text: "Através de dados processados ou armazenados", scores: { backend: 2, fullstack: 1 } }
+      { text: "Criar um site onde as pessoas possam se inscrever para receber novidades", scores: { frontend: 2, fullstack: 1, mobile: 1 } },
+      { text: "Fazer um sistema que envia automaticamente as novidades para as pessoas inscritas", scores: { backend: 2, fullstack: 1, mobile: 1 } },
+      { text: "Criar um aplicativo para celular que avisa as pessoas das novidades em tempo real", scores: { mobile: 2, fullstack: 1, frontend: 1 } }
     ]
   },
   {
-    question: "Qual destas atividades soa mais interessante para você?",
+    question: "Quando você está organizando suas coisas, como você prefere trabalhar?",
     options: [
-      { text: "Otimizar o desempenho de um servidor", scores: { backend: 2, fullstack: 1 } },
-      { text: "Criar layouts responsivos para diferentes dispositivos", scores: { frontend: 2, fullstack: 1 } },
-      { text: "Desenvolver funcionalidades para apps móveis", scores: { mobile: 2, fullstack: 1 } }
+      { text: "Gosto de deixar tudo bonito e bem organizado, para que seja fácil de encontrar", scores: { frontend: 2, mobile: 1, fullstack: 1 } },
+      { text: "Prefiro criar sistemas para facilitar a organização, mesmo que não seja visualmente atraente", scores: { backend: 2, fullstack: 1, mobile: 1 } },
+      { text: "Gosto de fazer um pouco dos dois: organizar e criar sistemas práticos de organização.", scores: { fullstack: 2, frontend: 1, backend: 1, mobile: 1 } }
     ]
   },
   {
-    question: "Você se considera mais:",
+    question: "Qual dessas atividades parece mais parecida com o que você gosta de fazer?",
     options: [
-      { text: "Criativo e voltado para design", scores: { frontend: 2, mobile: 1, fullstack: 1 } },
-      { text: "Analítico e focado em solução de problemas", scores: { backend: 2, fullstack: 1 } }
+      { text: "Decorar e organizar ambientes, deixar as coisas com uma aparência atraente", scores: { frontend: 2, mobile: 1, fullstack: 1 } },
+      { text: "Resolver quebra-cabeças e fazer cálculos, descobrir como as coisas funcionam", scores: { backend: 2, fullstack: 1, mobile: 1 } },
+      { text: "Ser o 'conector', alguém que gosta de fazer várias partes trabalharem juntas", scores: { fullstack: 2, frontend: 1, backend: 1, mobile: 1 } }
     ]
   },
   {
-    question: "Qual área você acha que tem mais oportunidades no mercado atual?",
+    question: "Quando você pensa em criar algo digital, o que te parece mais interessante?",
     options: [
-      { text: "Desenvolvimento Web", scores: { frontend: 1, backend: 1, fullstack: 2 } },
-      { text: "Desenvolvimento Mobile", scores: { mobile: 2, fullstack: 1 } },
-      { text: "Desenvolvimento de Software em geral", scores: { fullstack: 2, backend: 1 } }
+      { text: "Desenvolver sites e páginas que as pessoas acessam pelo navegador de internet", scores: { frontend: 2, fullstack: 1, mobile: 1 } },
+      { text: "Criar aplicativos que as pessoas possam usar diretamente no celular ou tablet", scores: { mobile: 2, fullstack: 1, frontend: 1 } },
+      { text: "Fazer com que tanto o site quanto o aplicativo funcionem juntos, em todas as plataformas", scores: { fullstack: 2, frontend: 1, backend: 1, mobile: 1 } }
     ]
   }
 ]
@@ -73,40 +74,34 @@ const pathCourses: { [key in Path]: string[] } = {
   frontend: [
     "HTML5 e CSS3",
     "Javascript",
+    "10 Projetos Javascript (Prática)",
     "ReactJS",
-    "VueJS",
-    "NextJS",
-    "Sass",
     "TailwindCSS",
-    "Webpack"
   ],
   backend: [
     "PHP 8.3",
+    "Bancos de Dados",
     "Laravel 11",
     "NodeJS",
     "AdonisJS",
-    "Bancos de Dados",
-    "API RESTful",
-    "GraphQL"
   ],
   fullstack: [
     "HTML5 e CSS3",
     "Javascript",
+    "10 Projetos Javascript (Prática)",
     "ReactJS",
-    "NodeJS",
+    "PHP 8.3",
     "Bancos de Dados",
-    "API RESTful",
+    "Laravel 11",
+    "NodeJS",
+    "AdonisJS",
     "Docker",
     "Git/GitHub"
   ],
   mobile: [
+    "HTML5 e CSS3",
     "Javascript",
     "React Native",
-    "Flutter",
-    "Desenvolvimento de Apps iOS",
-    "Desenvolvimento de Apps Android",
-    "APIs RESTful",
-    "Gerenciamento de Estado"
   ]
 }
 
